@@ -1,0 +1,4 @@
+{
+  "bind-to-port": 80,
+  "expected-extension": "html"
+}
