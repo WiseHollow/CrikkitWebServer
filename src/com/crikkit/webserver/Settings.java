@@ -1,7 +1,6 @@
 package com.crikkit.webserver;
 
 import com.crikkit.webserver.utils.FileUtils;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -84,5 +83,9 @@ public class Settings {
 
     public boolean isRequireExtensions() {
         return requireExtensions;
+    }
+
+    public String getVersion() {
+        return version;
     }
 }
