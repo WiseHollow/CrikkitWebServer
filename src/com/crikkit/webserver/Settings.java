@@ -22,6 +22,7 @@ public class Settings {
 
     private int port;
     private String expectedExtension;
+    private boolean requireExtensions;
 
     private void copyConfiguration() {
         File config = new File("config.json");
@@ -37,6 +38,7 @@ public class Settings {
         JSONObject configurationObject = new JSONObject(FileUtils.fileToString(config));
         port = configurationObject.getInt("bind-to-port");
         expectedExtension = configurationObject.getString("expected-extension");
+        requireExtensions = configurationObject.getBoolean("require-extensions");
     }
 
     private void exportInternalFile(String resource, File output) {
@@ -73,5 +75,9 @@ public class Settings {
 
     public String getExpectedExtension() {
         return expectedExtension;
+    }
+
+    public boolean isRequireExtensions() {
+        return requireExtensions;
     }
 }
