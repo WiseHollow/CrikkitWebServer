@@ -1,5 +1,6 @@
 package com.crikkit.webserver;
 
+import com.crikkit.webserver.exceptions.HttpPageNotFoundException;
 import com.crikkit.webserver.utils.FileUtils;
 import org.json.JSONObject;
 
@@ -25,12 +26,16 @@ public class Settings {
     private String expectedExtension;
     private boolean requireExtensions;
 
+    private boolean status404RedirectDefaultPath;
+    private String  status404RedirectPath;
+    private String  status404Html;
+
     private void copyConfiguration() {
         File config = new File("config.json");
         exportInternalFile("config.json", config);
     }
 
-    public void loadFromConfiguration() {
+    public void loadFromConfiguration() throws HttpPageNotFoundException {
         File config = new File("config.json");
         if (!config.exists()) {
             copyConfiguration();
@@ -43,6 +48,16 @@ public class Settings {
         JSONObject extensionSettings = configurationObject.getJSONArray("extensions").getJSONObject(0);
         expectedExtension = extensionSettings.getString("expected-extension");
         requireExtensions = extensionSettings.getBoolean("require-extensions");
+
+        JSONObject status404JSONObject = configurationObject.getJSONArray("status-handling")
+                .getJSONObject(0).getJSONArray("404-not-found").getJSONObject(0);
+        status404RedirectDefaultPath = status404JSONObject.getBoolean("overwrite-default-redirect");
+        status404RedirectPath = status404JSONObject.getString("redirect-path");
+        if (status404RedirectDefaultPath) {
+            status404Html = FileUtils.getHttpFileContents(new File(status404RedirectPath));
+        } else {
+            status404Html = "<html><body><h1>That page was not found!</h1></body></html>";
+        }
     }
 
     private void exportInternalFile(String resource, File output) {
@@ -87,5 +102,17 @@ public class Settings {
 
     public String getVersion() {
         return version;
+    }
+
+    public boolean isStatus404RedirectDefaultPath() {
+        return status404RedirectDefaultPath;
+    }
+
+    public String getStatus404RedirectPath() {
+        return status404RedirectPath;
+    }
+
+    public String getStatus404Html() {
+        return status404Html;
     }
 }

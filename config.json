@@ -6,5 +6,15 @@
       "require-extensions": true,
       "expected-extension": "html"
     }
+  ],
+  "status-handling": [
+    {
+      "404-not-found": [
+        {
+          "overwrite-default-redirect": true,
+          "redirect-path": "public_html/404.html"
+        }
+      ]
+    }
   ]
 }

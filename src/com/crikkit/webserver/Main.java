@@ -1,5 +1,7 @@
 package com.crikkit.webserver;
 
+import com.crikkit.webserver.exceptions.HttpPageNotFoundException;
+
 import java.io.IOException;
 
 public class Main {
@@ -12,6 +14,9 @@ public class Main {
             System.out.println("Failed to initialize Crikkit. Exiting..");
             e.printStackTrace();
             return;
+        } catch (HttpPageNotFoundException e) {
+            System.out.println("Failed to get required web page.");
+            e.printStackTrace();
         }
 
         while (server.isActive()) {

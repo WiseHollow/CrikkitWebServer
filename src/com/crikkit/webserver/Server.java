@@ -1,5 +1,6 @@
 package com.crikkit.webserver;
 
+import com.crikkit.webserver.exceptions.HttpPageNotFoundException;
 import com.crikkit.webserver.handlers.ConnectionHandler;
 
 import java.io.IOException;
@@ -19,7 +20,7 @@ public class Server {
         return active;
     }
 
-    public void initialize() throws IOException {
+    public void initialize() throws IOException, HttpPageNotFoundException {
         if (!active) {
             System.out.println("Loading configuration file..");
             Settings settings = Settings.getInstance();
