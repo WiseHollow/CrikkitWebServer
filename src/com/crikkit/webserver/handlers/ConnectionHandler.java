@@ -1,5 +1,8 @@
 package com.crikkit.webserver.handlers;
 
+import com.crikkit.webserver.requests.HttpRequest;
+import com.crikkit.webserver.responses.HttpResponse;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;

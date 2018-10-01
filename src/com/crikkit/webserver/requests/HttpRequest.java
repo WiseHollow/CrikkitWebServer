@@ -1,4 +1,4 @@
-package com.crikkit.webserver.handlers;
+package com.crikkit.webserver.requests;
 
 import com.crikkit.webserver.Settings;
 import com.crikkit.webserver.exceptions.HttpRequestException;
