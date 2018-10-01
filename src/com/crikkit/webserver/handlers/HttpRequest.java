@@ -45,7 +45,7 @@ public class HttpRequest {
                     path = "/index.html";
                 }
 
-                if (!path.contains(".")) {
+                if (Settings.getInstance().isRequireExtensions() && !path.endsWith("/") && !path.contains(".")) {
                     path += "." + Settings.getInstance().getExpectedExtension();
                 }
 
