@@ -20,6 +20,7 @@ public class Settings {
 
     private Settings() { }
 
+    private String version;
     private int port;
     private String expectedExtension;
     private boolean requireExtensions;
@@ -36,6 +37,7 @@ public class Settings {
         }
 
         JSONObject configurationObject = new JSONObject(FileUtils.fileToString(config));
+        version = configurationObject.getString("version");
         port = configurationObject.getInt("bind-to-port");
         expectedExtension = configurationObject.getString("expected-extension");
         requireExtensions = configurationObject.getBoolean("require-extensions");
