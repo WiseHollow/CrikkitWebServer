@@ -44,8 +44,6 @@ public class Settings {
         JSONObject extensionSettings = configurationObject.getJSONArray("extensions").getJSONObject(0);
         expectedExtension = extensionSettings.getString("expected-extension");
         requireExtensions = extensionSettings.getBoolean("require-extensions");
-
-        System.out.println("Found required ext: " + requireExtensions);
     }
 
     private void exportInternalFile(String resource, File output) {
