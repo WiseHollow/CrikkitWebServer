@@ -1,5 +1,6 @@
 package com.crikkit.webserver.responses;
 
+import com.crikkit.webserver.Settings;
 import com.crikkit.webserver.requests.HttpRequest;
 import com.crikkit.webserver.utils.FileUtils;
 
@@ -19,7 +20,16 @@ public class HttpResponse {
 
     public void send() {
         //TODO: Patch possible exploit with "../" and other things.
-        File requestedFile = new File("public_html" + httpRequest.getPath());
+        String path = httpRequest.getPath().split("\\?")[0];
+        //TODO: Pretty-up path elsewhere?
+        if (path.equals("/")) {
+            path = "/index.html";
+        }
+        if (Settings.getInstance().isRequireExtensions() && !path.endsWith("/") && !path.contains(".")) {
+            path += "." + Settings.getInstance().getExpectedExtension();
+        }
+
+        File requestedFile = new File("public_html" + path);
         HttpStatus httpStatus = requestedFile.exists() ? HttpStatus.OK : HttpStatus.NOT_FOUND;
         String html = FileUtils.requestHttpFileContents(requestedFile);
 

@@ -1,6 +1,5 @@
 package com.crikkit.webserver.requests;
 
-import com.crikkit.webserver.Settings;
 import com.crikkit.webserver.exceptions.HttpRequestException;
 
 import java.io.BufferedReader;
@@ -39,16 +38,7 @@ public class HttpRequest {
                     throw new HttpRequestException(requestHeaderElements[0]);
                 }
 
-                //TODO: Perhaps put this somewhere else.
                 path = requestHeaderElements[1];
-                if (path.equals("/")) {
-                    path = "/index.html";
-                }
-
-                if (Settings.getInstance().isRequireExtensions() && !path.endsWith("/") && !path.contains(".")) {
-                    path += "." + Settings.getInstance().getExpectedExtension();
-                }
-
                 protocol = requestHeaderElements[2];
             }
         } else {
