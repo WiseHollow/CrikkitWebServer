@@ -1,6 +1,10 @@
 {
   "version": "1.0.0-SNAPSHOT",
   "bind-to-port": 80,
-  "require-extensions": true,
-  "expected-extension": "html"
+  "extensions": [
+    {
+      "require-extensions": true,
+      "expected-extension": "html"
+    }
+  ]
 }

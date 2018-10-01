@@ -1,6 +1,7 @@
 package com.crikkit.webserver;
 
 import com.crikkit.webserver.utils.FileUtils;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -39,8 +40,12 @@ public class Settings {
         JSONObject configurationObject = new JSONObject(FileUtils.fileToString(config));
         version = configurationObject.getString("version");
         port = configurationObject.getInt("bind-to-port");
-        expectedExtension = configurationObject.getString("expected-extension");
-        requireExtensions = configurationObject.getBoolean("require-extensions");
+
+        JSONObject extensionSettings = configurationObject.getJSONArray("extensions").getJSONObject(0);
+        expectedExtension = extensionSettings.getString("expected-extension");
+        requireExtensions = extensionSettings.getBoolean("require-extensions");
+
+        System.out.println("Found required ext: " + requireExtensions);
     }
 
     private void exportInternalFile(String resource, File output) {
