@@ -35,7 +35,6 @@ public class HttpResponse {
 
         HttpHeader.HttpHeaderBuilder httpHeaderBuilder = HttpHeader.create()
                 .setProtocol("HTTP/1.1 " + httpStatus.getStatusCode() + " " + httpStatus.getPhrase())
-                .setDate("Date: Sun, 20 Oct 2018 18:39:30 GMT")
                 .setContentType("Content-type: text/html; charset=UTF-8")
                 .setContents(html);
         Arrays.stream(httpHeaderBuilder.build().toArray()).forEach(header -> writer.println(header));

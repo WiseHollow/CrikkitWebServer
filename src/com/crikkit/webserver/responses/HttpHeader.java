@@ -1,16 +1,25 @@
 package com.crikkit.webserver.responses;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 public class HttpHeader {
 
     public static class HttpHeaderBuilder {
 
+        private static DateTimeFormatter standardFormat = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss", Locale.ENGLISH);
+        private static DateFormat timezoneFormat = new SimpleDateFormat(" z");
         private String protocol, date, contentType, contents;
 
         protected HttpHeaderBuilder() {
-            Date date = java.util.Calendar.getInstance().getTime();
-            this.date = date.toString();
+            String timezone = timezoneFormat.format(Calendar.getInstance().getTime());
+            LocalDateTime now = LocalDateTime.now();
+            date = "Date: " + standardFormat.format(now) + timezone;
         }
 
         public HttpHeader build() {
