@@ -5,7 +5,6 @@ import com.crikkit.webserver.exceptions.HttpPageNotFoundException;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 
 public class FileUtils {
