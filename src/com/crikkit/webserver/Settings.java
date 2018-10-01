@@ -104,14 +104,6 @@ public class Settings {
         return version;
     }
 
-    public boolean isStatus404RedirectDefaultPath() {
-        return status404RedirectDefaultPath;
-    }
-
-    public String getStatus404RedirectPath() {
-        return status404RedirectPath;
-    }
-
     public String getStatus404Html() {
         return status404Html;
     }
