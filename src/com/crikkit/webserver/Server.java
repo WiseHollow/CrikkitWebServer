@@ -10,17 +10,15 @@ import java.net.Socket;
 public class Server {
 
     private boolean active;
-
     private ServerSocket serverSocket;
 
-    public Server() {
-    }
+    public Server() { }
 
-    public boolean isActive() {
+    boolean isActive() {
         return active;
     }
 
-    public void initialize() throws IOException, HttpPageNotFoundException {
+    void initialize() throws IOException, HttpPageNotFoundException {
         if (!active) {
             System.out.println("Loading configuration file..");
             Settings settings = Settings.getInstance();
@@ -31,13 +29,13 @@ public class Server {
         }
     }
 
-    public void listen() throws IOException {
+    void listen() throws IOException {
         Socket clientSocket = serverSocket.accept();
         ConnectionHandler connectionHandler = new ConnectionHandler(clientSocket);
         connectionHandler.start();
     }
 
-    public void close() throws IOException {
+    void close() throws IOException {
         serverSocket.close();
         active = false;
     }
