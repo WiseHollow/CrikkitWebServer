@@ -76,11 +76,9 @@ public class HttpHeader {
     }
 
     public String[] toArray() {
-        String[] headers = new String[] {
+        return new String[] {
                 protocol, date, contentType, "\r\n", contents
         };
-
-        return headers;
     }
 
 }
