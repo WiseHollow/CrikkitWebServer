@@ -35,6 +35,10 @@ public class Site {
         }
     }
 
+    public static void removeSite(Site site) {
+        siteDirectory.remove(site.host);
+    }
+
     private String host;
     private boolean enabled;
 

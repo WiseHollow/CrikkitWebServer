@@ -1,10 +1,9 @@
 package com.crikkit.webserver.commands.listeners;
 
-import com.crikkit.webserver.commands.CommandExecutor;
-import com.crikkit.webserver.commands.CommandStop;
-import com.crikkit.webserver.commands.CommandVersion;
+import com.crikkit.webserver.commands.*;
 import com.crikkit.webserver.logs.CrikkitLogger;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -20,6 +19,8 @@ public class CommandListener {
     private void register() {
         commands.put("version", new CommandVersion());
         commands.put("stop", new CommandStop());
+        commands.put("newsite", new CommandNewSite());
+        commands.put("delsite", new CommandDeleteSite());
     }
 
     public void listen() {
@@ -30,9 +31,16 @@ public class CommandListener {
 
     private void processCommand(String fullCommand) {
         fullCommand = fullCommand.toLowerCase();
-        int spaceIndex = fullCommand.contains(" ") ? fullCommand.indexOf(" ") : fullCommand.length();
+        boolean argumentsExist = false;
+        int spaceIndex;
+        if (fullCommand.contains(" ")) {
+            spaceIndex = fullCommand.indexOf(" ");
+            argumentsExist = true;
+        } else {
+            spaceIndex = fullCommand.length();
+        }
         String command = fullCommand.substring(0, spaceIndex);
-        String[] arguments = fullCommand.substring(spaceIndex).split(" ");
+        String[] arguments = argumentsExist ? fullCommand.substring(spaceIndex + 1).split(" ") : new String[0];
 
         CrikkitLogger logger = CrikkitLogger.getInstance();
         if (!commands.containsKey(command)) {

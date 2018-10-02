@@ -10,6 +10,20 @@ import java.nio.file.Files;
 
 public class FileUtils {
 
+    public static boolean deleteFolder(File folder) {
+        File[] files = folder.listFiles();
+        if (files != null) {
+            for (File f : files) {
+                if (f.isDirectory()) {
+                    deleteFolder(f);
+                } else {
+                    f.delete();
+                }
+            }
+        }
+        return folder.delete();
+    }
+
     public static String fileToString(File file) {
         byte[] encoded = new byte[0];
         try {
