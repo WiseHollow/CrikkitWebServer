@@ -30,21 +30,6 @@ public class Main {
         while (server.isActive()) {
             commandListener.listen();
         }
-
-//        while (server.isActive()) {
-//            try {
-//                server.listen();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
-
-//        try {
-//            crikkitLogger.warning("Closing Crikkit Web Server..");
-//            server.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
     }
 
 }
