@@ -2,6 +2,7 @@ package com.crikkit.webserver;
 
 import com.crikkit.webserver.exceptions.HttpPageNotFoundException;
 import com.crikkit.webserver.handlers.ConnectionHandler;
+import com.crikkit.webserver.logs.CrikkitLogger;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -20,10 +21,11 @@ public class Server {
 
     void initialize() throws IOException, HttpPageNotFoundException {
         if (!active) {
-            System.out.println("Loading configuration file..");
+            CrikkitLogger crikkitLogger = CrikkitLogger.getInstance();
+            crikkitLogger.info("Loading configuration file..");
             Settings settings = Settings.getInstance();
             settings.loadFromConfiguration();
-            System.out.println("Starting server on port: " + settings.getPort());
+            crikkitLogger.info("Starting server on port: " + settings.getPort());
             serverSocket = new ServerSocket(settings.getPort());
             active = true;
         }
@@ -37,6 +39,7 @@ public class Server {
 
     void close() throws IOException {
         serverSocket.close();
+        CrikkitLogger.getInstance().close();
         active = false;
     }
 

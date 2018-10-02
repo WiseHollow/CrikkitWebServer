@@ -1,5 +1,6 @@
 package com.crikkit.webserver.handlers;
 
+import com.crikkit.webserver.logs.CrikkitLogger;
 import com.crikkit.webserver.requests.HttpRequest;
 import com.crikkit.webserver.responses.HttpResponse;
 
@@ -25,13 +26,13 @@ public class ConnectionHandler extends Thread {
     @Override
     public void run() {
         HttpRequest httpRequest = new HttpRequest(reader);
-        System.out.println(httpRequest);
+        CrikkitLogger.getInstance().info(httpRequest);
         HttpResponse httpResponse = new HttpResponse(writer, httpRequest);
         httpResponse.send();
         try {
             socket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException exception) {
+            CrikkitLogger.getInstance().severe(exception.getMessage());
         }
     }
 }

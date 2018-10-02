@@ -1,9 +1,11 @@
 package com.crikkit.webserver.requests;
 
 import com.crikkit.webserver.exceptions.HttpRequestException;
+import com.crikkit.webserver.logs.CrikkitLogger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.stream.Stream;
 
 public class HttpRequest {
 
@@ -42,15 +44,25 @@ public class HttpRequest {
                 protocol = requestHeaderElements[2];
             }
         } else {
-            throw new HttpRequestException(requestHeader);
+            throw new HttpRequestException();
         }
 
         //TODO: Store the rest of the request data from reader.
+        parseHeader(reader.readLine());
+    }
+
+    private void parseHeader(String line) {
+        String[] elements = line.split(": ");
+        switch (elements[0]) {
+            case "Host":
+                host = elements[1];
+                break;
+        }
     }
 
     @Override
     public String toString() {
-        return type.name() + " " + path + " " + protocol;
+        return host + " " + type.name() + " " + path + " " + protocol;
     }
 
 }

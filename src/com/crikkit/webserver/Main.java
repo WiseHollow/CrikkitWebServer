@@ -1,21 +1,25 @@
 package com.crikkit.webserver;
 
 import com.crikkit.webserver.exceptions.HttpPageNotFoundException;
+import com.crikkit.webserver.logs.CrikkitLogger;
 
 import java.io.IOException;
+import java.util.logging.LogManager;
 
 public class Main {
     public static void main(String[] args) {
+        LogManager.getLogManager().reset();
         Server server = new Server();
+        CrikkitLogger crikkitLogger = CrikkitLogger.getInstance();
 
         try {
             server.initialize();
-        } catch (IOException e) {
-            System.out.println("Failed to initialize Crikkit. Exiting..");
-            e.printStackTrace();
+        } catch (IOException exception) {
+            crikkitLogger.severe("Failed to initialize Crikkit. Shutting down..");
+            crikkitLogger.severe(exception.getMessage());
             return;
         } catch (HttpPageNotFoundException e) {
-            System.out.println("Failed to get required web page.");
+            crikkitLogger.severe("Failed to get required web page.");
             e.printStackTrace();
         }
 
@@ -28,7 +32,7 @@ public class Main {
         }
 
         try {
-            System.out.println("Closing Crikkit Web Server..");
+            crikkitLogger.warning("Closing Crikkit Web Server..");
             server.close();
         } catch (IOException e) {
             e.printStackTrace();

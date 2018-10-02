@@ -2,6 +2,7 @@ package com.crikkit.webserver.utils;
 
 import com.crikkit.webserver.Settings;
 import com.crikkit.webserver.exceptions.HttpPageNotFoundException;
+import com.crikkit.webserver.logs.CrikkitLogger;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,7 +24,7 @@ public class FileUtils {
         if (file.exists()) {
             return fileToString(file);
         } else {
-            System.err.println("The requested resource was not found: " + file.getPath());
+            CrikkitLogger.getInstance().severe("The requested resource was not found: " + file.getPath());
             return Settings.getInstance().getStatus404Html();
         }
     }
@@ -32,7 +33,7 @@ public class FileUtils {
         if (file.exists()) {
             return fileToString(file);
         } else {
-            System.err.println("The requested resource was not found: " + file.getPath());
+            CrikkitLogger.getInstance().severe("The requested resource was not found: " + file.getPath());
             throw new HttpPageNotFoundException(file.getPath());
         }
     }
