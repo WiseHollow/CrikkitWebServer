@@ -2,6 +2,7 @@ package com.crikkit.webserver.requests;
 
 import com.crikkit.webserver.exceptions.HttpRequestException;
 import com.crikkit.webserver.logs.CrikkitLogger;
+import com.crikkit.webserver.sites.Site;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,13 +12,10 @@ public class HttpRequest {
 
     public enum RequestType { GET }
 
-    private BufferedReader reader;
-
     private String host, path, userAgent, protocol;
     private RequestType type;
 
     public HttpRequest(BufferedReader reader) {
-        this.reader = reader;
         try {
             parse(reader);
         } catch (IOException e) {
@@ -27,6 +25,10 @@ public class HttpRequest {
 
     public String getPath() {
         return path;
+    }
+
+    public String getHost() {
+        return host;
     }
 
     private void parse(BufferedReader reader) throws IOException {

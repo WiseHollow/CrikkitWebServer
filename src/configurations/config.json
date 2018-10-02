@@ -12,7 +12,13 @@
       "404-not-found": [
         {
           "overwrite-default-redirect": false,
-          "redirect-path": "public_html/404.html"
+          "overwrite-redirect-path": "sites/localhost/public_html/404.html"
+        }
+      ],
+      "503-service-unavailable": [
+        {
+          "overwrite-default-redirect": false,
+          "overwrite-redirect-path": "sites/localhost/public_html/503.html"
         }
       ]
     }

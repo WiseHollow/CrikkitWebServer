@@ -35,7 +35,8 @@ public class Server extends Thread {
         if (!active) {
             Settings settings = Settings.getInstance();
             generateDirectories();
-            settings.load();
+            settings.loadConfig();
+            settings.loadSitesDeclared();
             CrikkitLogger.getInstance().info("Starting server on port: " + settings.getPort());
             serverSocket = new ServerSocket(settings.getPort());
             active = true;
@@ -44,11 +45,18 @@ public class Server extends Thread {
 
     private void generateDirectories() {
         CrikkitLogger.getInstance().info("Generating required directories..");
-        File publicHtml = new File("public_html");
+        File configuration = new File("configurations");
+        File publicHtml = new File("sites");
+        if (!configuration.isDirectory()) {
+            boolean result = configuration.mkdirs();
+            if (!result) {
+                CrikkitLogger.getInstance().severe("Failed to create configurations directory.");
+            }
+        }
         if (!publicHtml.isDirectory()) {
             boolean result = publicHtml.mkdirs();
             if (!result) {
-                CrikkitLogger.getInstance().severe("Failed to create public_html directory.");
+                CrikkitLogger.getInstance().severe("Failed to create sites directory.");
             }
         }
     }

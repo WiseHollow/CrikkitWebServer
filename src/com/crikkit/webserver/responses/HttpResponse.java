@@ -2,11 +2,13 @@ package com.crikkit.webserver.responses;
 
 import com.crikkit.webserver.Settings;
 import com.crikkit.webserver.requests.HttpRequest;
+import com.crikkit.webserver.sites.Site;
 import com.crikkit.webserver.utils.FileUtils;
 
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.Arrays;
+import java.util.Optional;
 
 public class HttpResponse {
 
@@ -29,9 +31,25 @@ public class HttpResponse {
             path += "." + Settings.getInstance().getExpectedExtension();
         }
 
-        File requestedFile = new File("public_html" + path);
-        HttpStatus httpStatus = requestedFile.exists() ? HttpStatus.OK : HttpStatus.NOT_FOUND;
-        String html = FileUtils.requestHttpFileContents(requestedFile);
+        HttpStatus httpStatus;
+        File requestedFile;
+        String html;
+
+        Optional<Site> optionalRequestedSite = Site.getSite(httpRequest.getHost());
+        if (optionalRequestedSite.isPresent()) {
+            Site requestedSite = optionalRequestedSite.get();
+            if (requestedSite.isEnabled()) {
+                requestedFile = new File("sites" + File.separator + optionalRequestedSite.get().getHost() + File.separator + "public_html" + path);
+                httpStatus = requestedFile.exists() ? HttpStatus.OK : HttpStatus.NOT_FOUND;
+                html = FileUtils.requestHttpFileContents(requestedFile);
+            } else {
+                html = Settings.getInstance().getStatus503Html();
+                httpStatus = HttpStatus.SERVICE_UNAVAILABLE;
+            }
+        } else {
+            html = Settings.getInstance().getStatus404Html();
+            httpStatus = HttpStatus.NOT_FOUND;
+        }
 
         HttpHeader.HttpHeaderBuilder httpHeaderBuilder = HttpHeader.create()
                 .setProtocol("HTTP/1.1 " + httpStatus.getStatusCode() + " " + httpStatus.getPhrase())
