@@ -61,7 +61,7 @@ public class Site {
                 File indexFile = new File("sites" + File.separator + host + File.separator + "public_html" + File.separator + "index.html");
                 if (!indexFile.isFile()) {
                     try {
-                        FileUtils.exportInternalFile("templates" + File.separator + "index.html", indexFile);
+                        FileUtils.exportInternalFile("templates/index.html", indexFile);
                     } catch (FileNotFoundException e) {
                         CrikkitLogger.getInstance().severe(e);
                     }
