@@ -25,6 +25,7 @@ public class CommandListener {
         commands.put("stop", new CommandStop());
         commands.put("newsite", new CommandNewSite());
         commands.put("delsite", new CommandDeleteSite());
+        commands.put("updatesite", new CommandUpdateSite());
     }
 
     public void listen() {

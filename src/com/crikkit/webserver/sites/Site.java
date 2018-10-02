@@ -4,6 +4,7 @@ import com.crikkit.webserver.exceptions.SiteAlreadyInitializedException;
 import com.crikkit.webserver.exceptions.SiteCouldNotInitializeException;
 import com.crikkit.webserver.logs.CrikkitLogger;
 import com.crikkit.webserver.utils.FileUtils;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -70,12 +71,23 @@ public class Site {
         return true;
     }
 
+    public JSONObject toJsonObject() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("host", host);
+        jsonObject.put("enabled", enabled);
+        return jsonObject;
+    }
+
     public String getHost() {
         return host;
     }
 
     public boolean isEnabled() {
         return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     @Override

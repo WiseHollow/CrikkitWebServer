@@ -12,15 +12,38 @@ import java.io.IOException;
 
 public class SitesDeclaredUtils {
 
+    public static void updateSite(Site site) throws IOException {
+        File config = new File("configurations" + File.separator + "sites_declared.json");
+        if (!config.exists()) {
+            throw new FileNotFoundException();
+        }
+
+        JSONObject siteObject = site.toJsonObject();
+        JSONObject sitesDeclaredObject = new JSONObject(FileUtils.fileToString(config));
+        JSONArray sitesArray = sitesDeclaredObject.getJSONArray("sites");
+        for (int i = 0; i < sitesArray.length(); i++) {
+            if (sitesArray.getJSONObject(i).getString("host").equalsIgnoreCase(site.getHost())) {
+                sitesArray.put(i, siteObject);
+                sitesDeclaredObject.put("sites", sitesArray);
+                break;
+            }
+        }
+
+        try (FileWriter file = new FileWriter(config.getPath())) {
+            file.write(sitesDeclaredObject.toString());
+            file.close();
+            CrikkitLogger.getInstance().info("Successfully updated site in sites_declared!");
+        }
+
+    }
+
     public static void addSite(Site site) throws IOException {
         File config = new File("configurations" + File.separator + "sites_declared.json");
         if (!config.exists()) {
             throw new FileNotFoundException();
         }
 
-        JSONObject siteObject = new JSONObject();
-        siteObject.put("host", site.getHost());
-        siteObject.put("enabled", site.isEnabled());
+        JSONObject siteObject = site.toJsonObject();
 
         JSONObject sitesDeclaredObject = new JSONObject(FileUtils.fileToString(config));
         JSONArray sitesArray = sitesDeclaredObject.getJSONArray("sites");
