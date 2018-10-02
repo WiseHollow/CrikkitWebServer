@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public class CommandStop implements CommandExecutor {
 
-    CrikkitLogger logger;
+    private CrikkitLogger logger;
 
     public CommandStop() {
         logger = CrikkitLogger.getInstance();

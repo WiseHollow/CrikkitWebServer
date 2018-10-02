@@ -5,7 +5,7 @@ import com.crikkit.webserver.logs.CrikkitLogger;
 
 public class CommandVersion implements CommandExecutor {
 
-    CrikkitLogger logger;
+    private CrikkitLogger logger;
 
     public CommandVersion() {
         logger = CrikkitLogger.getInstance();

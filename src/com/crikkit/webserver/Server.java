@@ -42,7 +42,7 @@ public class Server extends Thread {
         }
     }
 
-    void generateDirectories() {
+    private void generateDirectories() {
         CrikkitLogger.getInstance().info("Generating required directories..");
         File publicHtml = new File("public_html");
         if (!publicHtml.isDirectory()) {
@@ -53,7 +53,7 @@ public class Server extends Thread {
         }
     }
 
-    void listen() throws IOException {
+    private void listen() throws IOException {
         Socket clientSocket;
         try {
             clientSocket = serverSocket.accept();
