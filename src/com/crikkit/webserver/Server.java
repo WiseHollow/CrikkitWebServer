@@ -4,6 +4,7 @@ import com.crikkit.webserver.exceptions.HttpPageNotFoundException;
 import com.crikkit.webserver.handlers.ConnectionHandler;
 import com.crikkit.webserver.logs.CrikkitLogger;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -21,13 +22,23 @@ public class Server {
 
     void initialize() throws IOException, HttpPageNotFoundException {
         if (!active) {
-            CrikkitLogger crikkitLogger = CrikkitLogger.getInstance();
-            crikkitLogger.info("Loading configuration file..");
             Settings settings = Settings.getInstance();
-            settings.loadFromConfiguration();
-            crikkitLogger.info("Starting server on port: " + settings.getPort());
+            generateDirectories();
+            settings.load();
+            CrikkitLogger.getInstance().info("Starting server on port: " + settings.getPort());
             serverSocket = new ServerSocket(settings.getPort());
             active = true;
+        }
+    }
+
+    void generateDirectories() {
+        CrikkitLogger.getInstance().info("Generating required directories..");
+        File publicHtml = new File("public_html");
+        if (!publicHtml.isDirectory()) {
+            boolean result = publicHtml.mkdirs();
+            if (!result) {
+                CrikkitLogger.getInstance().severe("Failed to create public_html directory.");
+            }
         }
     }
 

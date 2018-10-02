@@ -1,6 +1,7 @@
 package com.crikkit.webserver;
 
 import com.crikkit.webserver.exceptions.HttpPageNotFoundException;
+import com.crikkit.webserver.logs.CrikkitLogger;
 import com.crikkit.webserver.utils.FileUtils;
 import org.json.JSONObject;
 
@@ -31,12 +32,13 @@ public class Settings {
     private String  status404Html;
 
     private void copyConfiguration() {
-        File config = new File("config.json");
-        exportInternalFile("config.json", config);
+        File config = new File("configuration " + File.separator + "config.json");
+        exportInternalFile("configuration" + File.separator + "config.json", config);
     }
 
-    public void loadFromConfiguration() throws HttpPageNotFoundException {
-        File config = new File("config.json");
+    public void load() throws HttpPageNotFoundException {
+        CrikkitLogger.getInstance().info("Loading configuration file..");
+        File config = new File("configuration" + File.separator + "config.json");
         if (!config.exists()) {
             copyConfiguration();
         }

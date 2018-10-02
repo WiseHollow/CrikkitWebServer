@@ -15,7 +15,7 @@ public class Main {
         try {
             server.initialize();
         } catch (IOException exception) {
-            crikkitLogger.severe("Failed to initialize Crikkit. Shutting down..");
+            crikkitLogger.severe("Failed to bind to port " + Settings.getInstance().getPort() + ". In use?");
             crikkitLogger.severe(exception.getMessage());
             return;
         } catch (HttpPageNotFoundException e) {
