@@ -1,9 +1,11 @@
 package com.crikkit.webserver;
 
+import com.crikkit.webserver.commands.CommandListener;
 import com.crikkit.webserver.exceptions.HttpPageNotFoundException;
 import com.crikkit.webserver.logs.CrikkitLogger;
 
 import java.io.IOException;
+import java.util.Scanner;
 import java.util.logging.LogManager;
 
 public class Main {
@@ -23,20 +25,27 @@ public class Main {
             e.printStackTrace();
         }
 
+        server.start();
+
+        CommandListener commandListener = new CommandListener();
         while (server.isActive()) {
-            try {
-                server.listen();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            commandListener.listen();
         }
 
-        try {
-            crikkitLogger.warning("Closing Crikkit Web Server..");
-            server.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        while (server.isActive()) {
+//            try {
+//                server.listen();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+
+//        try {
+//            crikkitLogger.warning("Closing Crikkit Web Server..");
+//            server.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
 }

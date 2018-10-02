@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class Server {
+public class Server extends Thread {
 
     private boolean active;
     private ServerSocket serverSocket;
@@ -54,4 +54,14 @@ public class Server {
         active = false;
     }
 
+    @Override
+    public void run() {
+        while (active) {
+            try {
+                listen();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }
