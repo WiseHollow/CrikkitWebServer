@@ -40,7 +40,7 @@ public class CrikkitLogHandler extends Handler {
             System.out.println(ANSI_RED + message);
             severe(message);
         } else {
-            System.out.println(ANSI_GREEN + message);
+            System.out.println(ANSI_BLUE + message);
             info(message);
         }
 
