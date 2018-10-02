@@ -39,8 +39,15 @@ public class Server extends Thread {
             settings.loadSitesDeclared();
             CrikkitLogger.getInstance().info("Starting server on port: " + settings.getPort());
             serverSocket = new ServerSocket(settings.getPort());
+            logMemoryStats();
             active = true;
         }
+    }
+
+    public void logMemoryStats() {
+        CrikkitLogger.getInstance()
+                .info("Used Memory: " + ((Runtime.getRuntime().maxMemory() - Runtime.getRuntime().freeMemory()) / 1048576) + "/"
+                        + (Runtime.getRuntime().maxMemory() / 1048576) + " MB");
     }
 
     private void generateDirectories() {

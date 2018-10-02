@@ -8,12 +8,17 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Optional;
 
 public class Site {
 
     private static HashMap<String, Site> siteDirectory = new HashMap<>();
+
+    public static Collection<Site> getSites() {
+        return siteDirectory.values();
+    }
 
     public static Optional<Site> getSite(String host) {
         if (siteDirectory.containsKey(host))
