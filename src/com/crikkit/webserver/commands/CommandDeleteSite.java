@@ -9,6 +9,8 @@ import java.util.Optional;
 
 public class CommandDeleteSite implements CommandExecutor {
 
+    private final String syntax = "delsite [host] optionals(--hard)";
+
     private CrikkitLogger logger;
 
     public CommandDeleteSite() {
@@ -18,7 +20,7 @@ public class CommandDeleteSite implements CommandExecutor {
     @Override
     public void execute(String command, String[] args) {
         if (args.length == 0) {
-            logger.warning("Invalid command syntax. ex: 'delsite [host] optionals(--hard)'");
+            logger.warning("Invalid command syntax. ex: '" + syntax + "'");
         } else {
             boolean hard = (args.length == 2 && args[1].equalsIgnoreCase("--hard"));
 
@@ -45,5 +47,10 @@ public class CommandDeleteSite implements CommandExecutor {
                 logger.warning("No such site with host: " + args[0]);
             }
         }
+    }
+
+    @Override
+    public String getSyntax() {
+        return syntax;
     }
 }

@@ -3,20 +3,24 @@ package com.crikkit.webserver.commands.listeners;
 import com.crikkit.webserver.commands.*;
 import com.crikkit.webserver.logs.CrikkitLogger;
 
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Scanner;
 
 public class CommandListener {
 
-    private HashMap<String, CommandExecutor> commands;
+    private static HashMap<String, CommandExecutor> commands = new HashMap<>();
+
+    public static Collection<CommandExecutor> getCommandList() {
+        return commands.values();
+    }
 
     public CommandListener() {
-        commands = new HashMap<>();
         register();
     }
 
     private void register() {
+        commands.put("help", new CommandHelp());
         commands.put("version", new CommandVersion());
         commands.put("stop", new CommandStop());
         commands.put("newsite", new CommandNewSite());

@@ -10,6 +10,8 @@ import java.io.IOException;
 
 public class CommandNewSite implements CommandExecutor {
 
+    public static final String syntax = "newsite [host] optionals(--disabled)";
+
     private CrikkitLogger logger;
 
     public CommandNewSite() {
@@ -19,7 +21,7 @@ public class CommandNewSite implements CommandExecutor {
     @Override
     public void execute(String command, String[] args) {
         if (args.length == 0) {
-            logger.warning("Invalid command syntax. ex: 'newsite [host] optionals(--disabled)'");
+            logger.warning("Invalid command syntax. ex: '" + syntax + "'");
         } else {
             String host = args[0];
             boolean enabled = (args.length == 1 || !args[1].equalsIgnoreCase("--disabled"));
@@ -42,5 +44,10 @@ public class CommandNewSite implements CommandExecutor {
 
             logger.info("Successfully created new site: " + site);
         }
+    }
+
+    @Override
+    public String getSyntax() {
+        return syntax;
     }
 }

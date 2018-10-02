@@ -1,23 +1,23 @@
 package com.crikkit.webserver.commands;
 
-import com.crikkit.webserver.Settings;
+import com.crikkit.webserver.commands.listeners.CommandListener;
 import com.crikkit.webserver.logs.CrikkitLogger;
 
-public class CommandVersion implements CommandExecutor {
+public class CommandHelp implements CommandExecutor {
 
     private CrikkitLogger logger;
 
-    public CommandVersion() {
+    public CommandHelp() {
         logger = CrikkitLogger.getInstance();
     }
 
     @Override
     public void execute(String command, String[] args) {
-        logger.info("Crikkit WebServer version -> " + Settings.getInstance().getVersion());
+        CommandListener.getCommandList().forEach(commandExecutor -> logger.info(commandExecutor.getSyntax()));
     }
 
     @Override
     public String getSyntax() {
-        return "version";
+        return "help";
     }
 }

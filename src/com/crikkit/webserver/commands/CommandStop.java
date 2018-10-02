@@ -22,4 +22,9 @@ public class CommandStop implements CommandExecutor {
             logger.severe(e);
         }
     }
+
+    @Override
+    public String getSyntax() {
+        return "stop";
+    }
 }
