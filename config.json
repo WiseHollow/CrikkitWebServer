@@ -1,5 +1,0 @@
-{
-  "bind-to-port": 80,
-  "require-extensions": true,
-  "expected-extension": "html"
-}

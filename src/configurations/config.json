@@ -1,0 +1,26 @@
+{
+  "version": "1.0.0-SNAPSHOT",
+  "bind-to-port": 80,
+  "extensions": [
+    {
+      "require-extensions": true,
+      "expected-extension": "html"
+    }
+  ],
+  "status-handling": [
+    {
+      "404-not-found": [
+        {
+          "overwrite-default-redirect": false,
+          "overwrite-redirect-path": "sites/localhost/public_html/404.html"
+        }
+      ],
+      "503-service-unavailable": [
+        {
+          "overwrite-default-redirect": false,
+          "overwrite-redirect-path": "sites/localhost/public_html/503.html"
+        }
+      ]
+    }
+  ]
+}

@@ -1,44 +1,101 @@
 package com.crikkit.webserver;
 
+import com.crikkit.webserver.exceptions.HttpPageNotFoundException;
 import com.crikkit.webserver.handlers.ConnectionHandler;
+import com.crikkit.webserver.logs.CrikkitLogger;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 
-public class Server {
+public class Server extends Thread {
 
-    private boolean active;
+    private static Server instance;
 
-    private ServerSocket serverSocket;
+    public static Server getInstance() {
+        if (instance == null) {
+            instance = new Server();
+        }
 
-    public Server() {
+        return instance;
     }
 
-    public boolean isActive() {
+    private boolean active;
+    private ServerSocket serverSocket;
+
+    private Server() { }
+
+    boolean isActive() {
         return active;
     }
 
-    public void initialize() throws IOException {
+    void initialize() throws IOException, HttpPageNotFoundException {
         if (!active) {
-            System.out.println("Loading configuration file..");
             Settings settings = Settings.getInstance();
-            settings.loadFromConfiguration();
-            System.out.println("Starting server on port: " + settings.getPort());
+            generateDirectories();
+            settings.loadConfig();
+            settings.loadSitesDeclared();
+            CrikkitLogger.getInstance().info("Starting server on port: " + settings.getPort());
             serverSocket = new ServerSocket(settings.getPort());
+            logMemoryStats();
             active = true;
         }
     }
 
-    public void listen() throws IOException {
-        Socket clientSocket = serverSocket.accept();
+    public void logMemoryStats() {
+        CrikkitLogger.getInstance()
+                .info("Used Memory: " + ((Runtime.getRuntime().maxMemory() - Runtime.getRuntime().freeMemory()) / 1048576) + "/"
+                        + (Runtime.getRuntime().maxMemory() / 1048576) + " MB");
+    }
+
+    private void generateDirectories() {
+        CrikkitLogger.getInstance().info("Generating required directories..");
+        File configuration = new File("configurations");
+        File publicHtml = new File("sites");
+        if (!configuration.isDirectory()) {
+            boolean result = configuration.mkdirs();
+            if (!result) {
+                CrikkitLogger.getInstance().severe("Failed to create configurations directory.");
+            }
+        }
+        if (!publicHtml.isDirectory()) {
+            boolean result = publicHtml.mkdirs();
+            if (!result) {
+                CrikkitLogger.getInstance().severe("Failed to create sites directory.");
+            }
+        }
+    }
+
+    private void listen() throws IOException {
+        Socket clientSocket;
+        try {
+            clientSocket = serverSocket.accept();
+        } catch (SocketException e) {
+            if (active) {
+                CrikkitLogger.getInstance().severe(e);
+            }
+            return;
+        }
         ConnectionHandler connectionHandler = new ConnectionHandler(clientSocket);
         connectionHandler.start();
     }
 
     public void close() throws IOException {
-        serverSocket.close();
         active = false;
+        serverSocket.close();
+        CrikkitLogger.getInstance().close();
     }
 
+    @Override
+    public void run() {
+        while (active) {
+            try {
+                listen();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

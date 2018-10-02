@@ -1,22 +1,21 @@
-package com.crikkit.webserver.handlers;
+package com.crikkit.webserver.requests;
 
-import com.crikkit.webserver.Settings;
 import com.crikkit.webserver.exceptions.HttpRequestException;
+import com.crikkit.webserver.logs.CrikkitLogger;
+import com.crikkit.webserver.sites.Site;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.stream.Stream;
 
 public class HttpRequest {
 
     public enum RequestType { GET }
 
-    private BufferedReader reader;
-
     private String host, path, userAgent, protocol;
     private RequestType type;
 
     public HttpRequest(BufferedReader reader) {
-        this.reader = reader;
         try {
             parse(reader);
         } catch (IOException e) {
@@ -26,6 +25,10 @@ public class HttpRequest {
 
     public String getPath() {
         return path;
+    }
+
+    public String getHost() {
+        return host;
     }
 
     private void parse(BufferedReader reader) throws IOException {
@@ -39,28 +42,29 @@ public class HttpRequest {
                     throw new HttpRequestException(requestHeaderElements[0]);
                 }
 
-                //TODO: Perhaps put this somewhere else.
                 path = requestHeaderElements[1];
-                if (path.equals("/")) {
-                    path = "/index.html";
-                }
-
-                if (Settings.getInstance().isRequireExtensions() && !path.endsWith("/") && !path.contains(".")) {
-                    path += "." + Settings.getInstance().getExpectedExtension();
-                }
-
                 protocol = requestHeaderElements[2];
             }
         } else {
-            throw new HttpRequestException(requestHeader);
+            throw new HttpRequestException();
         }
 
         //TODO: Store the rest of the request data from reader.
+        parseHeader(reader.readLine());
+    }
+
+    private void parseHeader(String line) {
+        String[] elements = line.split(": ");
+        switch (elements[0]) {
+            case "Host":
+                host = elements[1];
+                break;
+        }
     }
 
     @Override
     public String toString() {
-        return type.name() + " " + path + " " + protocol;
+        return host + " " + type.name() + " " + path + " " + protocol;
     }
 
 }
