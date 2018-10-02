@@ -47,8 +47,7 @@ public class HttpResponse {
                 httpStatus = HttpStatus.SERVICE_UNAVAILABLE;
             }
         } else {
-            html = Settings.getInstance().getStatus404Html();
-            httpStatus = HttpStatus.NOT_FOUND;
+            return;
         }
 
         HttpHeader.HttpHeaderBuilder httpHeaderBuilder = HttpHeader.create()
