@@ -11,14 +11,14 @@ import java.util.logging.LogManager;
 public class Main {
     public static void main(String[] args) {
         LogManager.getLogManager().reset();
-        Server server = new Server();
+        Server server = Server.getInstance();
         CrikkitLogger crikkitLogger = CrikkitLogger.getInstance();
 
         try {
             server.initialize();
         } catch (IOException exception) {
             crikkitLogger.severe("Failed to bind to port " + Settings.getInstance().getPort() + ". In use?");
-            crikkitLogger.severe(exception.getMessage());
+            crikkitLogger.severe(exception);
             return;
         } catch (HttpPageNotFoundException e) {
             crikkitLogger.severe("Failed to get required web page.");

@@ -32,7 +32,7 @@ public class ConnectionHandler extends Thread {
         try {
             socket.close();
         } catch (IOException exception) {
-            CrikkitLogger.getInstance().severe(exception.getMessage());
+            CrikkitLogger.getInstance().severe(exception);
         }
     }
 }

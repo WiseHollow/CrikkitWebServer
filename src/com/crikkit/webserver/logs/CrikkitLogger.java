@@ -57,6 +57,11 @@ public class CrikkitLogger {
         logger.severe(msg);
     }
 
+    public void severe(Exception exception) {
+        logger.severe(exception.getMessage());
+        Arrays.stream(exception.getStackTrace()).forEach(element -> logger.severe(element.toString()));
+    }
+
     public void warning(String msg) {
         logger.warning(msg);
     }

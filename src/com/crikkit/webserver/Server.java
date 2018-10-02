@@ -8,13 +8,24 @@ import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class Server extends Thread {
+
+    private static Server instance;
+
+    public static Server getInstance() {
+        if (instance == null) {
+            instance = new Server();
+        }
+
+        return instance;
+    }
 
     private boolean active;
     private ServerSocket serverSocket;
 
-    public Server() { }
+    private Server() { }
 
     boolean isActive() {
         return active;
@@ -43,15 +54,23 @@ public class Server extends Thread {
     }
 
     void listen() throws IOException {
-        Socket clientSocket = serverSocket.accept();
+        Socket clientSocket;
+        try {
+            clientSocket = serverSocket.accept();
+        } catch (SocketException e) {
+            if (active) {
+                CrikkitLogger.getInstance().severe(e);
+            }
+            return;
+        }
         ConnectionHandler connectionHandler = new ConnectionHandler(clientSocket);
         connectionHandler.start();
     }
 
-    void close() throws IOException {
+    public void close() throws IOException {
+        active = false;
         serverSocket.close();
         CrikkitLogger.getInstance().close();
-        active = false;
     }
 
     @Override
