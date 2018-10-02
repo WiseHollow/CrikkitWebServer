@@ -1,11 +1,10 @@
 package com.crikkit.webserver;
 
-import com.crikkit.webserver.commands.CommandListener;
+import com.crikkit.webserver.commands.listeners.CommandListener;
 import com.crikkit.webserver.exceptions.HttpPageNotFoundException;
 import com.crikkit.webserver.logs.CrikkitLogger;
 
 import java.io.IOException;
-import java.util.Scanner;
 import java.util.logging.LogManager;
 
 public class Main {
