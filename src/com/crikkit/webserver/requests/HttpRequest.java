@@ -57,7 +57,9 @@ public class HttpRequest {
         String[] elements = line.split(": ");
         switch (elements[0]) {
             case "Host":
-                host = elements[1];
+                host = elements[1].toLowerCase();
+                if (host.startsWith("www."))
+                    host = host.substring(4);
                 break;
         }
     }
