@@ -60,6 +60,9 @@ public class HttpRequest {
                 host = elements[1].toLowerCase();
                 if (host.startsWith("www."))
                     host = host.substring(4);
+                if (host.contains(":"))
+                    host = host.substring(0, host.indexOf(":"));
+                CrikkitLogger.getInstance().info("Host from request: " + host);
                 break;
         }
     }
