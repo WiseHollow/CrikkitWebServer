@@ -27,6 +27,7 @@ public class CommandListener {
         commands.put("delsite", new CommandDeleteSite());
         commands.put("updatesite", new CommandUpdateSite());
         commands.put("status", new CommandStatus());
+        commands.put("reload", new CommandReload());
     }
 
     public void listen() {

@@ -16,6 +16,10 @@ public class Site {
 
     private static HashMap<String, Site> siteDirectory = new HashMap<>();
 
+    public static void softClearSites() {
+        siteDirectory.clear();
+    }
+
     public static Collection<Site> getSites() {
         return siteDirectory.values();
     }
