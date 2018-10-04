@@ -87,6 +87,10 @@ public class Site {
         return jsonObject;
     }
 
+    public String getSitePublicHtmlDirectory() {
+        return "sites" + File.separator + host + File.separator + "public_html";
+    }
+
     public String getHost() {
         return host;
     }

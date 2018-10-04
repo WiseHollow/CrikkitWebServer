@@ -39,7 +39,7 @@ public class HttpResponse {
         if (optionalRequestedSite.isPresent()) {
             Site requestedSite = optionalRequestedSite.get();
             if (requestedSite.isEnabled()) {
-                requestedFile = new File("sites" + File.separator + optionalRequestedSite.get().getHost() + File.separator + "public_html" + path);
+                requestedFile = new File(optionalRequestedSite.get().getSitePublicHtmlDirectory() + path);
                 httpStatus = requestedFile.exists() ? HttpStatus.OK : HttpStatus.NOT_FOUND;
                 html = FileUtils.requestHttpFileContents(requestedFile);
             } else {
