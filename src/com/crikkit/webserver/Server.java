@@ -3,6 +3,7 @@ package com.crikkit.webserver;
 import com.crikkit.webserver.exceptions.HttpPageNotFoundException;
 import com.crikkit.webserver.handlers.ConnectionHandler;
 import com.crikkit.webserver.logs.CrikkitLogger;
+import com.crikkit.webserver.sites.Site;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,6 +43,11 @@ public class Server extends Thread {
             logMemoryStats();
             active = true;
         }
+    }
+
+    public void reload() {
+        Site.softClearSites();
+        Settings.getInstance().loadSitesDeclared();
     }
 
     public void logMemoryStats() {

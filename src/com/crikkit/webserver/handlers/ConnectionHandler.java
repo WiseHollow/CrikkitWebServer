@@ -12,10 +12,10 @@ import java.net.Socket;
 
 public class ConnectionHandler extends Thread {
 
-    private Socket socket;
+    private final Socket socket;
 
-    private PrintWriter writer;
-    private BufferedReader reader;
+    private final PrintWriter writer;
+    private final BufferedReader reader;
 
     public ConnectionHandler(Socket socket) throws IOException {
         this.socket = socket;
@@ -26,7 +26,7 @@ public class ConnectionHandler extends Thread {
     @Override
     public void run() {
         HttpRequest httpRequest = new HttpRequest(reader);
-        CrikkitLogger.getInstance().info(httpRequest);
+        CrikkitLogger.getInstance().info(httpRequest + " from " + socket.getInetAddress().getHostAddress());
         HttpResponse httpResponse = new HttpResponse(writer, httpRequest);
         httpResponse.send();
         try {

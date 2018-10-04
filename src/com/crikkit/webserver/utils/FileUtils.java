@@ -4,13 +4,14 @@ import com.crikkit.webserver.Server;
 import com.crikkit.webserver.Settings;
 import com.crikkit.webserver.exceptions.HttpPageNotFoundException;
 import com.crikkit.webserver.logs.CrikkitLogger;
+import com.sun.istack.internal.NotNull;
 
 import java.io.*;
 import java.nio.file.Files;
 
 public class FileUtils {
 
-    public static boolean deleteFolder(File folder) {
+    public static boolean deleteFolder(@NotNull File folder) {
         File[] files = folder.listFiles();
         if (files != null) {
             for (File f : files) {
@@ -24,7 +25,7 @@ public class FileUtils {
         return folder.delete();
     }
 
-    public static String fileToString(File file) {
+    public static String fileToString(@NotNull File file) {
         byte[] encoded = new byte[0];
         try {
             encoded = Files.readAllBytes(file.toPath());
@@ -34,8 +35,8 @@ public class FileUtils {
         return new String(encoded);
     }
 
-    public static String requestHttpFileContents(File file) {
-        if (file != null && file.exists()) {
+    public static String requestHttpFileContents(@NotNull File file) {
+        if (file.exists()) {
             return fileToString(file);
         } else {
             CrikkitLogger.getInstance().severe("The requested resource was not found: " + file.getPath());
@@ -43,7 +44,7 @@ public class FileUtils {
         }
     }
 
-    public static String getHttpFileContents(File file) throws HttpPageNotFoundException {
+    public static String getHttpFileContents(@NotNull File file) throws HttpPageNotFoundException {
         if (file.exists()) {
             return fileToString(file);
         } else {
@@ -52,7 +53,7 @@ public class FileUtils {
         }
     }
 
-    public static void exportInternalFile(String resource, File output) throws FileNotFoundException {
+    public static void exportInternalFile(@NotNull String resource, @NotNull File output) throws FileNotFoundException {
         InputStream fis = Server.class.getClassLoader().getResourceAsStream(resource);
         if (fis == null) {
             throw new FileNotFoundException();

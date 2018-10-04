@@ -16,6 +16,10 @@ public class Site {
 
     private static HashMap<String, Site> siteDirectory = new HashMap<>();
 
+    public static void softClearSites() {
+        siteDirectory.clear();
+    }
+
     public static Collection<Site> getSites() {
         return siteDirectory.values();
     }
@@ -81,6 +85,10 @@ public class Site {
         jsonObject.put("host", host);
         jsonObject.put("enabled", enabled);
         return jsonObject;
+    }
+
+    public String getSitePublicHtmlDirectory() {
+        return "sites" + File.separator + host + File.separator + "public_html";
     }
 
     public String getHost() {
