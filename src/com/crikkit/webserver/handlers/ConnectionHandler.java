@@ -12,10 +12,10 @@ import java.net.Socket;
 
 public class ConnectionHandler extends Thread {
 
-    private Socket socket;
+    private final Socket socket;
 
-    private PrintWriter writer;
-    private BufferedReader reader;
+    private final PrintWriter writer;
+    private final BufferedReader reader;
 
     public ConnectionHandler(Socket socket) throws IOException {
         this.socket = socket;

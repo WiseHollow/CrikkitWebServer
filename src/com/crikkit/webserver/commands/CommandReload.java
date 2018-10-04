@@ -1,9 +1,9 @@
 package com.crikkit.webserver.commands;
 
+import com.crikkit.webserver.Server;
 import com.crikkit.webserver.Settings;
 import com.crikkit.webserver.exceptions.HttpPageNotFoundException;
 import com.crikkit.webserver.logs.CrikkitLogger;
-import com.crikkit.webserver.sites.Site;
 
 public class CommandReload implements CommandExecutor {
 
@@ -20,8 +20,7 @@ public class CommandReload implements CommandExecutor {
         } catch (HttpPageNotFoundException e) {
             logger.severe(e);
         }
-        Site.softClearSites();
-        Settings.getInstance().loadSitesDeclared();
+        Server.getInstance().reload();
         logger.info("Finished reloading server.");
     }
 

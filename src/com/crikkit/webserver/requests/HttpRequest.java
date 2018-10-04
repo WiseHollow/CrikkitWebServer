@@ -1,6 +1,7 @@
 package com.crikkit.webserver.requests;
 
 import com.crikkit.webserver.exceptions.HttpRequestException;
+import com.crikkit.webserver.exceptions.HttpUnhandledRequestType;
 import com.crikkit.webserver.logs.CrikkitLogger;
 import com.crikkit.webserver.sites.Site;
 
@@ -18,8 +19,8 @@ public class HttpRequest {
     public HttpRequest(BufferedReader reader) {
         try {
             parse(reader);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException | HttpRequestException | HttpUnhandledRequestType e) {
+            CrikkitLogger.getInstance().severe(e);
         }
     }
 
@@ -31,7 +32,7 @@ public class HttpRequest {
         return host;
     }
 
-    private void parse(BufferedReader reader) throws IOException {
+    private void parse(BufferedReader reader) throws IOException, HttpUnhandledRequestType, HttpRequestException {
         String requestHeader = reader.readLine();
         if (requestHeader != null) {
             String[] requestHeaderElements = requestHeader.split(" ");
@@ -39,7 +40,7 @@ public class HttpRequest {
                 try {
                     type = RequestType.valueOf(requestHeaderElements[0]);
                 } catch (Exception exception) {
-                    throw new HttpRequestException(requestHeaderElements[0]);
+                    throw new HttpUnhandledRequestType(requestHeaderElements[0]);
                 }
 
                 path = requestHeaderElements[1];
