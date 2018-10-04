@@ -63,7 +63,6 @@ public class HttpRequest {
                     host = host.substring(4);
                 if (host.contains(":"))
                     host = host.substring(0, host.indexOf(":"));
-                CrikkitLogger.getInstance().info("Host from request: " + host);
                 break;
         }
     }
