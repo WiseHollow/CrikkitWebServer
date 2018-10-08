@@ -4,6 +4,9 @@ import com.crikkit.webserver.commands.listeners.CommandListener;
 import com.crikkit.webserver.exceptions.HttpPageNotFoundException;
 import com.crikkit.webserver.logs.CrikkitLogger;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import java.io.IOException;
 import java.util.logging.LogManager;
 

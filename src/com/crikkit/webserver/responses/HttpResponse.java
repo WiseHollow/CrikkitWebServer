@@ -1,5 +1,6 @@
 package com.crikkit.webserver.responses;
 
+import com.crikkit.webserver.CSEM;
 import com.crikkit.webserver.Settings;
 import com.crikkit.webserver.requests.HttpRequest;
 import com.crikkit.webserver.sites.Site;
@@ -49,6 +50,8 @@ public class HttpResponse {
         } else {
             return;
         }
+
+        html = CSEM.getInstance().translate(html);
 
         HttpHeader.HttpHeaderBuilder httpHeaderBuilder = HttpHeader.create()
                 .setProtocol("HTTP/1.1 " + httpStatus.getStatusCode() + " " + httpStatus.getPhrase())
