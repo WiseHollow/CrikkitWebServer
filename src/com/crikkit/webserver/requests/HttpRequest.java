@@ -54,16 +54,20 @@ public class HttpRequest {
         parseHeader(reader.readLine());
     }
 
-    private void parseHeader(String line) {
+    private void parseHeader(String line) throws HttpRequestException {
         String[] elements = line.split(": ");
-        switch (elements[0]) {
-            case "Host":
-                host = elements[1].toLowerCase();
-                if (host.startsWith("www."))
-                    host = host.substring(4);
-                if (host.contains(":"))
-                    host = host.substring(0, host.indexOf(":"));
-                break;
+        if (elements.length < 1) {
+            throw new HttpRequestException("Header contained invalid data.");
+        } else {
+            switch (elements[0]) {
+                case "Host":
+                    host = elements[1].toLowerCase();
+                    if (host.startsWith("www."))
+                        host = host.substring(4);
+                    if (host.contains(":"))
+                        host = host.substring(0, host.indexOf(":"));
+                    break;
+            }
         }
     }
 
