@@ -24,6 +24,10 @@ public class CommandNewSite implements CommandExecutor {
             logger.warning("Invalid command syntax. ex: '" + syntax + "'");
         } else {
             String host = args[0];
+            if (host.contains(":")) {
+                logger.warning("You cannot define a port for the host.");
+                return;
+            }
             boolean enabled = (args.length == 1 || !args[1].equalsIgnoreCase("--disabled"));
             Site site = new Site(host, enabled);
             try {
