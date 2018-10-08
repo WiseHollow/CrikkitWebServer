@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 
 public class HttpRequest {
 
-    public enum RequestType { GET }
+    public enum RequestType { GET, POST }
 
     private String host, path, userAgent, protocol;
     private RequestType type;
@@ -30,6 +30,10 @@ public class HttpRequest {
 
     public String getHost() {
         return host;
+    }
+
+    public RequestType getRequestType() {
+        return type;
     }
 
     private void parse(BufferedReader reader) throws IOException, HttpUnhandledRequestType, HttpRequestException {

@@ -58,6 +58,7 @@ public class HttpResponse {
 
             Site requestedSite = optionalRequestedSite.get();
             WebPage webPage = requestedSite.getWebPageHtml(path);
+            webPage.runServerScripts(httpRequest);
             return new HttpResponse(writer, webPage);
         }
     }

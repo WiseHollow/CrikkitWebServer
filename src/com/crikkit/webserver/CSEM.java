@@ -1,6 +1,7 @@
 package com.crikkit.webserver;
 
 import com.crikkit.webserver.logs.CrikkitLogger;
+import com.crikkit.webserver.requests.HttpRequest;
 
 import javax.script.*;
 import java.io.*;
@@ -29,6 +30,16 @@ public class CSEM {
         customBindings.put("$version", Settings.getInstance().getVersion());
         engine.setBindings(customBindings, ScriptContext.ENGINE_SCOPE);
         engine.getContext().setWriter(stringWriter);
+    }
+
+    public void includeHeaderData(HttpRequest httpRequest) {
+        Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
+
+        if (httpRequest.getRequestType() == HttpRequest.RequestType.POST) {
+
+        }
+
+        engine.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
     }
 
     private Object eval(String statement) throws ScriptException {

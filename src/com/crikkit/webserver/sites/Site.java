@@ -97,8 +97,7 @@ public class Site {
 
         File webPageFile = new File(getSitePublicHtmlDirectory() + path);
         if (webPageFile.exists()) {
-            String translatedHtml = CSEM.getInstance().translate(FileUtils.requestHttpFileContents(webPageFile));
-            return new WebPage(HttpStatus.OK, translatedHtml);
+            return new WebPage(HttpStatus.OK, FileUtils.requestHttpFileContents(webPageFile));
         } else {
             return new WebPage(HttpStatus.NOT_FOUND, Settings.getInstance().getStatus404Html());
         }
