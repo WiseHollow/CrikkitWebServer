@@ -1,15 +1,12 @@
 package com.crikkit.webserver.responses;
 
-import com.crikkit.webserver.CSEM;
 import com.crikkit.webserver.Settings;
 import com.crikkit.webserver.exceptions.HttpResponseBuildException;
 import com.crikkit.webserver.exceptions.SiteNotFoundException;
 import com.crikkit.webserver.requests.HttpRequest;
 import com.crikkit.webserver.sites.Site;
 import com.crikkit.webserver.sites.WebPage;
-import com.crikkit.webserver.utils.FileUtils;
 
-import java.io.File;
 import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Optional;
@@ -69,7 +66,7 @@ public class HttpResponse {
     private HttpStatus httpStatus;
     private String html;
 
-    public HttpResponse(PrintWriter writer, WebPage webPage) {
+    private HttpResponse(PrintWriter writer, WebPage webPage) {
         this.writer = writer;
         this.httpStatus = webPage.getHttpStatus();
         this.html = webPage.getHtml();

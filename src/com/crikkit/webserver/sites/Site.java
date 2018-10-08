@@ -104,7 +104,7 @@ public class Site {
         }
     }
 
-    public String getSitePublicHtmlDirectory() {
+    private String getSitePublicHtmlDirectory() {
         return "sites" + File.separator + host + File.separator + "public_html";
     }
 
