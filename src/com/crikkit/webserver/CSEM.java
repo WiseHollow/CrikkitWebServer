@@ -36,20 +36,24 @@ public class CSEM {
     }
 
     public String translate(String html) {
-        int indexOfStart = html.indexOf(symbolStart);
-        int indexOfEnd = html.indexOf(symbolEnd);
+        while(html.contains(symbolStart) && html.contains(symbolEnd)) {
+            int indexOfStart = html.indexOf(symbolStart);
+            int indexOfEnd = html.indexOf(symbolEnd);
 
-        if (indexOfStart >= 0 && indexOfEnd >= 0) {
-            String script = html.substring(indexOfStart + symbolStart.length(), indexOfEnd);
-            try {
-                eval(script);
-            } catch (ScriptException e) {
-                CrikkitLogger.getInstance().severe(e);
-            } finally {
-                String before = html.substring(0, indexOfStart);
-                String after = html.substring(indexOfEnd + symbolEnd.length());
-                html = before + stringWriter + after;
+            if (indexOfStart >= 0 && indexOfEnd >= 0) {
+                String script = html.substring(indexOfStart + symbolStart.length(), indexOfEnd);
+                try {
+                    eval(script);
+                } catch (ScriptException e) {
+                    CrikkitLogger.getInstance().severe(e);
+                } finally {
+                    String before = html.substring(0, indexOfStart);
+                    String after = html.substring(indexOfEnd + symbolEnd.length());
+                    html = before + stringWriter + after;
+                }
             }
+
+            stringWriter.getBuffer().setLength(0);
         }
 
         return html;
