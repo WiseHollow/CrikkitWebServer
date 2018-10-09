@@ -47,10 +47,6 @@ public class HttpRequest {
         return postData;
     }
 
-    public RequestType getRequestType() {
-        return type;
-    }
-
     private void parse(BufferedReader reader) throws IOException, HttpUnhandledRequestType, HttpRequestException {
         String requestHeader = reader.readLine();
         if (requestHeader != null) {
@@ -69,38 +65,27 @@ public class HttpRequest {
             throw new HttpRequestException();
         }
 
-        //TODO: Store the rest of the request data from reader.
         parseHeader(reader.readLine());
-        if (type == RequestType.POST) {
+        for (int i = 0; i < 20; i++) {
+            boolean finishedReading = parseNextLine(reader);
+            if (finishedReading)
+                break;
+        }
+    }
 
-            this.userAgent = reader.readLine().substring(12);
-            this.accept = reader.readLine().substring(8);
-            this.acceptLanguage = reader.readLine().substring(17);
-            this.acceptEncoding = reader.readLine().substring(17);
-            this.referer = reader.readLine().substring(9);
-            this.contentType = reader.readLine().substring(14);
-            this.contentLength = Integer.parseInt(reader.readLine().substring(16));
-            this.dnt = reader.readLine().substring(5);
-            this.connection = reader.readLine().substring(12);
-            this.upgradeInsecureRequests = reader.readLine().substring(27);
-            //this.cacheControl = reader.readLine();
-            //CrikkitLogger.getInstance().info("Cache-Control----> " + this.cacheControl); //.substring(15);
-            //CrikkitLogger.getInstance().info("EXTRA? : " + reader.readLine());
-            //reader.readLine(); // blank line in between header and content.
-
-            for (int i = 0; i < 10; i++) {
-                if (reader.readLine().equals("")) {
-                    break;
-                }
-            }
-
+    private boolean parseNextLine(BufferedReader reader) throws IOException, HttpRequestException {
+        String line = reader.readLine();
+        if (!line.equals("")) {
+            parseHeader(line);
+            return false;
+        } else {
             char[] buffer = new char[this.contentLength];
             try {
                 reader.read(buffer, 0, this.contentLength);
             } catch (IOException exception) {
                 CrikkitLogger.getInstance().severe("Tried to read too many bytes from stream.");
                 CrikkitLogger.getInstance().severe(exception);
-                return;
+                return true;
             }
             String postData = new String(buffer);
             if (postData.length() > 0) {
@@ -119,22 +104,11 @@ public class HttpRequest {
                     }
                 }
             }
-
-//            CrikkitLogger.getInstance().warning(userAgent);
-//            CrikkitLogger.getInstance().warning(accept);
-//            CrikkitLogger.getInstance().warning(acceptLanguage);
-//            CrikkitLogger.getInstance().warning(acceptEncoding);
-//            CrikkitLogger.getInstance().warning(referer);
-//            CrikkitLogger.getInstance().warning(contentType);
-//            CrikkitLogger.getInstance().warning(contentLength);
-//            CrikkitLogger.getInstance().warning(dnt);
-//            CrikkitLogger.getInstance().warning(connection);
-//            CrikkitLogger.getInstance().warning(upgradeInsecureRequests);
-//            CrikkitLogger.getInstance().warning(cacheControl);
+            return true;
         }
     }
 
-    private void parseHeader(String line) throws HttpRequestException {
+    private void parseHeader(String line) throws HttpRequestException, NumberFormatException {
         String[] elements = line.split(": ");
         if (elements.length < 1) {
             throw new HttpRequestException("Header contained invalid data.");
@@ -146,6 +120,39 @@ public class HttpRequest {
                         host = host.substring(4);
                     if (host.contains(":"))
                         host = host.substring(0, host.indexOf(":"));
+                    break;
+                case "User-Agent":
+                    userAgent = elements[1];
+                    break;
+                case "Accept":
+                    accept = elements[1];
+                    break;
+                case "Accept-Language":
+                    acceptLanguage = elements[1];
+                    break;
+                case "Accept-Encoding":
+                    acceptEncoding = elements[1];
+                    break;
+                case "Referer":
+                    referer = elements[1];
+                    break;
+                case "Content-Type":
+                    contentType = elements[1];
+                    break;
+                case "Content-Length":
+                    contentLength = Integer.parseInt(elements[1]);
+                    break;
+                case "DNT":
+                    dnt = elements[1];
+                    break;
+                case "Connection":
+                    connection = elements[1];
+                    break;
+                case "Upgrade-Insecure-Requests":
+                    upgradeInsecureRequests = elements[1];
+                    break;
+                case "Cache-Control":
+                    cacheControl = elements[1];
                     break;
             }
         }
