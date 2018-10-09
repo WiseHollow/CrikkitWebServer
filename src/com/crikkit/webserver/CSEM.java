@@ -40,7 +40,9 @@ public class CSEM {
         Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
 
         bindings.put("$_ISPOST", httpRequest.getPostData().size() > 0);
+        bindings.put("$_ISGET", httpRequest.getGetData().size() > 0);
         bindings.put("$_POST", httpRequest.getPostData());
+        bindings.put("$_GET", httpRequest.getGetData());
 
         engine.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
     }

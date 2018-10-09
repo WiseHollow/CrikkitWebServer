@@ -25,9 +25,11 @@ public class HttpRequest {
 
     private RequestType type;
     private HashMap<String, String> postData;
+    private HashMap<String, String> getData;
 
     public HttpRequest(BufferedReader reader) {
         postData = new HashMap<>();
+        getData = new HashMap<>();
         try {
             parse(reader);
         } catch (IOException | HttpRequestException | HttpUnhandledRequestType e) {
@@ -47,6 +49,34 @@ public class HttpRequest {
         return postData;
     }
 
+    public HashMap<String, String> getGetData() {
+        return getData;
+    }
+
+    private void parseGetRequestFromPath(String path) {
+        int startOfGetData = path.indexOf("?");
+        if (startOfGetData >= 0) {
+            String get = path.substring(startOfGetData + 1);
+            if (get.length() > 0) {
+                String[] elements = get.split("&");
+                for (String element : elements) {
+                    try {
+                        int indexToSplitFrom = element.indexOf("=");
+                        String key = element.substring(0, indexToSplitFrom);
+                        key = URLDecoder.decode(key, "UTF-8");
+                        String value = element.substring(indexToSplitFrom + 1);
+                        value = URLDecoder.decode(value, "UTF-8");
+                        this.getData.put(key, value);
+                    } catch (UnsupportedEncodingException
+                            | StringIndexOutOfBoundsException exception) {
+                        CrikkitLogger.getInstance().severe(exception);
+                    }
+                }
+            }
+        }
+
+    }
+
     private void parse(BufferedReader reader) throws IOException, HttpUnhandledRequestType, HttpRequestException {
         String requestHeader = reader.readLine();
         if (requestHeader != null) {
@@ -59,6 +89,7 @@ public class HttpRequest {
                 }
 
                 path = requestHeaderElements[1];
+                parseGetRequestFromPath(path);
                 protocol = requestHeaderElements[2];
             }
         } else {
@@ -78,7 +109,7 @@ public class HttpRequest {
         if (!line.equals("")) {
             parseHeader(line);
             return false;
-        } else {
+        } else if (type == RequestType.POST) {
             char[] buffer = new char[this.contentLength];
             try {
                 reader.read(buffer, 0, this.contentLength);
@@ -104,8 +135,9 @@ public class HttpRequest {
                     }
                 }
             }
-            return true;
         }
+
+        return true;
     }
 
     private void parseHeader(String line) throws HttpRequestException, NumberFormatException {
