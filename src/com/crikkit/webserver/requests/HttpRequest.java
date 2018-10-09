@@ -3,20 +3,31 @@ package com.crikkit.webserver.requests;
 import com.crikkit.webserver.exceptions.HttpRequestException;
 import com.crikkit.webserver.exceptions.HttpUnhandledRequestType;
 import com.crikkit.webserver.logs.CrikkitLogger;
-import com.crikkit.webserver.sites.Site;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.stream.Stream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.HashMap;
 
 public class HttpRequest {
 
     public enum RequestType { GET, POST }
 
     private String host, path, userAgent, protocol;
+    private String accept, acceptLanguage, acceptEncoding;
+    private String referer;
+    private String contentType;
+    private String dnt;
+    private String connection, upgradeInsecureRequests, cacheControl;
+
+    private int contentLength;
+
     private RequestType type;
+    private HashMap<String, String> postData;
 
     public HttpRequest(BufferedReader reader) {
+        postData = new HashMap<>();
         try {
             parse(reader);
         } catch (IOException | HttpRequestException | HttpUnhandledRequestType e) {
@@ -30,6 +41,10 @@ public class HttpRequest {
 
     public String getHost() {
         return host;
+    }
+
+    public HashMap<String, String> getPostData() {
+        return postData;
     }
 
     public RequestType getRequestType() {
@@ -56,6 +71,64 @@ public class HttpRequest {
 
         //TODO: Store the rest of the request data from reader.
         parseHeader(reader.readLine());
+        if (type == RequestType.POST) {
+
+            this.userAgent = reader.readLine().substring(12);
+            this.accept = reader.readLine().substring(8);
+            this.acceptLanguage = reader.readLine().substring(17);
+            this.acceptEncoding = reader.readLine().substring(17);
+            this.referer = reader.readLine().substring(9);
+            this.contentType = reader.readLine().substring(14);
+            this.contentLength = Integer.parseInt(reader.readLine().substring(16));
+            this.dnt = reader.readLine().substring(5);
+            this.connection = reader.readLine().substring(12);
+            this.upgradeInsecureRequests = reader.readLine().substring(27);
+            //this.cacheControl = reader.readLine();
+            //CrikkitLogger.getInstance().info("Cache-Control----> " + this.cacheControl); //.substring(15);
+            //CrikkitLogger.getInstance().info("EXTRA? : " + reader.readLine());
+            //reader.readLine(); // blank line in between header and content.
+
+            for (int i = 0; i < 10; i++) {
+                if (reader.readLine().equals("")) {
+                    break;
+                }
+            }
+
+            char[] buffer = new char[this.contentLength];
+            int bytesRead = reader.read(buffer, 0, this.contentLength);
+            if (bytesRead != -1) {
+                CrikkitLogger.getInstance().warning("Request Header quoted " + this.contentLength + " length but there is still more data to read: " + bytesRead);
+            }
+            String postData = new String(buffer);
+            if (postData.length() > 0) {
+                String[] elements = postData.split("&");
+                for (String element : elements) {
+                    try {
+                        int indexToSplitFrom = element.indexOf("=");
+                        String key = element.substring(0, indexToSplitFrom);
+                        key = URLDecoder.decode(key, "UTF-8");
+                        String value = element.substring(indexToSplitFrom + 1);
+                        value = URLDecoder.decode(value, "UTF-8");
+                        this.postData.put(key, value);
+                    } catch (UnsupportedEncodingException
+                            | StringIndexOutOfBoundsException exception) {
+                        CrikkitLogger.getInstance().severe(exception);
+                    }
+                }
+            }
+
+//            CrikkitLogger.getInstance().warning(userAgent);
+//            CrikkitLogger.getInstance().warning(accept);
+//            CrikkitLogger.getInstance().warning(acceptLanguage);
+//            CrikkitLogger.getInstance().warning(acceptEncoding);
+//            CrikkitLogger.getInstance().warning(referer);
+//            CrikkitLogger.getInstance().warning(contentType);
+//            CrikkitLogger.getInstance().warning(contentLength);
+//            CrikkitLogger.getInstance().warning(dnt);
+//            CrikkitLogger.getInstance().warning(connection);
+//            CrikkitLogger.getInstance().warning(upgradeInsecureRequests);
+//            CrikkitLogger.getInstance().warning(cacheControl);
+        }
     }
 
     private void parseHeader(String line) throws HttpRequestException {

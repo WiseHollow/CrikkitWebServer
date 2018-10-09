@@ -26,18 +26,21 @@ public class CSEM {
     private CSEM() {
         stringWriter = new StringWriter();
         engine = new ScriptEngineManager().getEngineByName("nashorn");
-        Bindings customBindings = engine.createBindings();
-        customBindings.put("$version", Settings.getInstance().getVersion());
-        engine.setBindings(customBindings, ScriptContext.ENGINE_SCOPE);
+        initializeBindings();
         engine.getContext().setWriter(stringWriter);
+    }
+
+    private void initializeBindings() {
+        Bindings customBindings = engine.createBindings();
+        customBindings.put("$_VERSION", Settings.getInstance().getVersion());
+        engine.setBindings(customBindings, ScriptContext.ENGINE_SCOPE);
     }
 
     public void includeHeaderData(HttpRequest httpRequest) {
         Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
 
-        if (httpRequest.getRequestType() == HttpRequest.RequestType.POST) {
-
-        }
+        bindings.put("$_ISPOST", httpRequest.getPostData().size() > 0);
+        bindings.put("$_POST", httpRequest.getPostData());
 
         engine.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
     }
@@ -66,6 +69,8 @@ public class CSEM {
 
             stringWriter.getBuffer().setLength(0);
         }
+
+        initializeBindings();
 
         return html;
     }
