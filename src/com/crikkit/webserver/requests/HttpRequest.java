@@ -95,9 +95,12 @@ public class HttpRequest {
             }
 
             char[] buffer = new char[this.contentLength];
-            int bytesRead = reader.read(buffer, 0, this.contentLength);
-            if (bytesRead != -1) {
-                CrikkitLogger.getInstance().warning("Request Header quoted " + this.contentLength + " length but there is still more data to read: " + bytesRead);
+            try {
+                reader.read(buffer, 0, this.contentLength);
+            } catch (IOException exception) {
+                CrikkitLogger.getInstance().severe("Tried to read too many bytes from stream.");
+                CrikkitLogger.getInstance().severe(exception);
+                return;
             }
             String postData = new String(buffer);
             if (postData.length() > 0) {
