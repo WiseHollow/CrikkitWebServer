@@ -27,7 +27,7 @@ public class ConnectionHandler extends Thread {
     public void run() {
         HttpRequest httpRequest = new HttpRequest(reader);
         CrikkitLogger.getInstance().info(httpRequest + " from " + socket.getInetAddress().getHostAddress());
-        HttpResponse httpResponse = new HttpResponse(writer, httpRequest);
+        HttpResponse httpResponse = (new HttpResponse.Builder()).setRequest(httpRequest).setWriter(writer).create();
         httpResponse.send();
         try {
             socket.close();

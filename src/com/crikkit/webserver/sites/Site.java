@@ -1,8 +1,11 @@
 package com.crikkit.webserver.sites;
 
+import com.crikkit.webserver.CSEM;
+import com.crikkit.webserver.Settings;
 import com.crikkit.webserver.exceptions.SiteAlreadyInitializedException;
 import com.crikkit.webserver.exceptions.SiteCouldNotInitializeException;
 import com.crikkit.webserver.logs.CrikkitLogger;
+import com.crikkit.webserver.responses.HttpStatus;
 import com.crikkit.webserver.utils.FileUtils;
 import org.json.JSONObject;
 
@@ -87,7 +90,20 @@ public class Site {
         return jsonObject;
     }
 
-    public String getSitePublicHtmlDirectory() {
+    public WebPage getWebPageHtml(String path) {
+        if (!enabled) {
+            return new WebPage(HttpStatus.SERVICE_UNAVAILABLE, Settings.getInstance().getStatus503Html());
+        }
+
+        File webPageFile = new File(getSitePublicHtmlDirectory() + path);
+        if (webPageFile.exists()) {
+            return new WebPage(HttpStatus.OK, FileUtils.requestHttpFileContents(webPageFile));
+        } else {
+            return new WebPage(HttpStatus.NOT_FOUND, Settings.getInstance().getStatus404Html());
+        }
+    }
+
+    private String getSitePublicHtmlDirectory() {
         return "sites" + File.separator + host + File.separator + "public_html";
     }
 
