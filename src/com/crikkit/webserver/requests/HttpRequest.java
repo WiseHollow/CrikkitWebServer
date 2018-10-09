@@ -3,20 +3,33 @@ package com.crikkit.webserver.requests;
 import com.crikkit.webserver.exceptions.HttpRequestException;
 import com.crikkit.webserver.exceptions.HttpUnhandledRequestType;
 import com.crikkit.webserver.logs.CrikkitLogger;
-import com.crikkit.webserver.sites.Site;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.stream.Stream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.HashMap;
 
 public class HttpRequest {
 
-    public enum RequestType { GET }
+    public enum RequestType { GET, POST }
 
     private String host, path, userAgent, protocol;
+    private String accept, acceptLanguage, acceptEncoding;
+    private String referer;
+    private String contentType;
+    private String dnt;
+    private String connection, upgradeInsecureRequests, cacheControl;
+
+    private int contentLength;
+
     private RequestType type;
+    private HashMap<String, String> postData;
+    private HashMap<String, String> getData;
 
     public HttpRequest(BufferedReader reader) {
+        postData = new HashMap<>();
+        getData = new HashMap<>();
         try {
             parse(reader);
         } catch (IOException | HttpRequestException | HttpUnhandledRequestType e) {
@@ -32,6 +45,38 @@ public class HttpRequest {
         return host;
     }
 
+    public HashMap<String, String> getPostData() {
+        return postData;
+    }
+
+    public HashMap<String, String> getGetData() {
+        return getData;
+    }
+
+    private void parseGetRequestFromPath(String path) {
+        int startOfGetData = path.indexOf("?");
+        if (startOfGetData >= 0) {
+            String get = path.substring(startOfGetData + 1);
+            if (get.length() > 0) {
+                String[] elements = get.split("&");
+                for (String element : elements) {
+                    try {
+                        int indexToSplitFrom = element.indexOf("=");
+                        String key = element.substring(0, indexToSplitFrom);
+                        key = URLDecoder.decode(key, "UTF-8");
+                        String value = element.substring(indexToSplitFrom + 1);
+                        value = URLDecoder.decode(value, "UTF-8");
+                        this.getData.put(key, value);
+                    } catch (UnsupportedEncodingException
+                            | StringIndexOutOfBoundsException exception) {
+                        CrikkitLogger.getInstance().severe(exception);
+                    }
+                }
+            }
+        }
+
+    }
+
     private void parse(BufferedReader reader) throws IOException, HttpUnhandledRequestType, HttpRequestException {
         String requestHeader = reader.readLine();
         if (requestHeader != null) {
@@ -44,17 +89,58 @@ public class HttpRequest {
                 }
 
                 path = requestHeaderElements[1];
+                parseGetRequestFromPath(path);
                 protocol = requestHeaderElements[2];
             }
         } else {
             throw new HttpRequestException();
         }
 
-        //TODO: Store the rest of the request data from reader.
         parseHeader(reader.readLine());
+        for (int i = 0; i < 20; i++) {
+            boolean finishedReading = parseNextLine(reader);
+            if (finishedReading)
+                break;
+        }
     }
 
-    private void parseHeader(String line) throws HttpRequestException {
+    private boolean parseNextLine(BufferedReader reader) throws IOException, HttpRequestException {
+        String line = reader.readLine();
+        if (!line.equals("")) {
+            parseHeader(line);
+            return false;
+        } else if (type == RequestType.POST) {
+            char[] buffer = new char[this.contentLength];
+            try {
+                reader.read(buffer, 0, this.contentLength);
+            } catch (IOException exception) {
+                CrikkitLogger.getInstance().severe("Tried to read too many bytes from stream.");
+                CrikkitLogger.getInstance().severe(exception);
+                return true;
+            }
+            String postData = new String(buffer);
+            if (postData.length() > 0) {
+                String[] elements = postData.split("&");
+                for (String element : elements) {
+                    try {
+                        int indexToSplitFrom = element.indexOf("=");
+                        String key = element.substring(0, indexToSplitFrom);
+                        key = URLDecoder.decode(key, "UTF-8");
+                        String value = element.substring(indexToSplitFrom + 1);
+                        value = URLDecoder.decode(value, "UTF-8");
+                        this.postData.put(key, value);
+                    } catch (UnsupportedEncodingException
+                            | StringIndexOutOfBoundsException exception) {
+                        CrikkitLogger.getInstance().severe(exception);
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private void parseHeader(String line) throws HttpRequestException, NumberFormatException {
         String[] elements = line.split(": ");
         if (elements.length < 1) {
             throw new HttpRequestException("Header contained invalid data.");
@@ -66,6 +152,39 @@ public class HttpRequest {
                         host = host.substring(4);
                     if (host.contains(":"))
                         host = host.substring(0, host.indexOf(":"));
+                    break;
+                case "User-Agent":
+                    userAgent = elements[1];
+                    break;
+                case "Accept":
+                    accept = elements[1];
+                    break;
+                case "Accept-Language":
+                    acceptLanguage = elements[1];
+                    break;
+                case "Accept-Encoding":
+                    acceptEncoding = elements[1];
+                    break;
+                case "Referer":
+                    referer = elements[1];
+                    break;
+                case "Content-Type":
+                    contentType = elements[1];
+                    break;
+                case "Content-Length":
+                    contentLength = Integer.parseInt(elements[1]);
+                    break;
+                case "DNT":
+                    dnt = elements[1];
+                    break;
+                case "Connection":
+                    connection = elements[1];
+                    break;
+                case "Upgrade-Insecure-Requests":
+                    upgradeInsecureRequests = elements[1];
+                    break;
+                case "Cache-Control":
+                    cacheControl = elements[1];
                     break;
             }
         }

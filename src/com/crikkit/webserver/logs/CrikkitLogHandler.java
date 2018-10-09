@@ -39,8 +39,11 @@ public class CrikkitLogHandler extends Handler {
         if (record.getLevel() == Level.SEVERE) {
             System.out.println(ANSI_RED + message);
             severe(message);
+        } else if (record.getLevel() == Level.WARNING) {
+            System.out.println(ANSI_YELLOW + message);
+            info(message);
         } else {
-            System.out.println(message);
+            System.out.println(ANSI_WHITE + message);
             info(message);
         }
 
